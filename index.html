@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Interactive Profile | Gururaj Chougle</title>
     <!-- Chosen Palette: "Calm Harmony" - Off-white (#f9fafb), White (#ffffff), Dark Gray Text (#1f2937), and a professional Blue accent (#3b82f6) -->
     <!-- Application Structure Plan: A non-linear "Personal Dashboard" SPA. Structure: [1] Sticky Nav for quick jumps. [2] "Profile" section (default view) with a "Key Metrics Dashboard" for immediate impact. [3] Tabbed "Professional Experience" section to isolate and detail roles (Kiko vs. TechAlpha), with "Kiko" further segmented into "Key Launches" (cards) and "Impact" (chart). [4] "Skills" section visualized with a Radar Chart. [5] "Education & Certs" in a clean grid. Rationale: This structure surfaces high-impact, quantifiable data first, then allows users to "drill down" into the areas that interest them (projects, skills, or history) instead of forcing a linear scroll, which is more aligned with a recruiter's workflow. -->
@@ -10,503 +10,696 @@
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f9fafb;
-            color: #1f2937;
-        }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f9fafb;
+        color: #1f2937;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 672px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 320px;
+        max-height: 400px;
+      }
+      @media (min-width: 768px) {
         .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 672px; 
-            margin-left: auto;
-            margin-right: auto;
-            height: 320px; 
-            max-height: 400px;
+          height: 400px;
         }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 400px;
-            }
-        }
-        [data-tab-content] {
-            display: none;
-        }
-        [data-tab-content].active {
-            display: block;
-        }
-        nav a {
-            padding: 1rem 0.5rem;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        nav a.active,
-        nav a:hover {
-            border-bottom-color: #3b82f6;
-            color: #3b82f6;
-        }
-        .tab-button {
-            padding: 0.5rem 1rem;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            color: #6b7280;
-        }
-        .tab-button.active,
-        .tab-button:hover {
-            color: #3b82f6;
-            border-bottom-color: #3b82f6;
-        }
-        .stat-card {
-            background-color: #ffffff;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .section-card {
-            background-color: #ffffff;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            overflow: hidden;
-        }
+      }
+      [data-tab-content] {
+        display: none;
+      }
+      [data-tab-content].active {
+        display: block;
+      }
+      nav a {
+        padding: 1rem 0.5rem;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s ease;
+      }
+      nav a.active,
+      nav a:hover {
+        border-bottom-color: #3b82f6;
+        color: #3b82f6;
+      }
+      .tab-button {
+        padding: 0.5rem 1rem;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        color: #6b7280;
+      }
+      .tab-button.active,
+      .tab-button:hover {
+        color: #3b82f6;
+        border-bottom-color: #3b82f6;
+      }
+      .stat-card {
+        background-color: #ffffff;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+      }
+      .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+      .section-card {
+        background-color: #ffffff;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+          0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+      }
     </style>
-</head>
-<body class="antialiased">
-
+  </head>
+  <body class="antialiased">
     <!-- Header & Navigation -->
     <header class="sticky top-0 z-50 w-full bg-white shadow-md">
-        <div class="container mx-auto max-w-6xl px-4">
-            <nav class="flex items-center justify-between h-16">
-                <div class="text-xl font-bold text-gray-800">
-                    GURURAJ CHOUGULE
-                </div>
-                <div class="hidden md:flex space-x-4">
-                    <a href="#profile" class="nav-link text-sm font-medium text-gray-600">Profile</a>
-                    <a href="#experience" class="nav-link text-sm font-medium text-gray-600">Experience</a>
-                    <a href="#skills" class="nav-link text-sm font-medium text-gray-600">Skills</a>
-                    <a href="#education" class="nav-link text-sm font-medium text-gray-600">Education</a>
-                </div>
-            </nav>
-        </div>
+      <div class="container mx-auto max-w-6xl px-4">
+        <nav class="flex items-center justify-between h-16">
+          <div class="text-xl font-bold text-gray-800">GURURAJ CHOUGULE</div>
+          <div class="hidden md:flex space-x-4">
+            <a
+              href="#profile"
+              class="nav-link text-sm font-medium text-gray-600"
+              >Profile</a
+            >
+            <a
+              href="#experience"
+              class="nav-link text-sm font-medium text-gray-600"
+              >Experience</a
+            >
+            <a href="#skills" class="nav-link text-sm font-medium text-gray-600"
+              >Skills</a
+            >
+            <a
+              href="#education"
+              class="nav-link text-sm font-medium text-gray-600"
+              >Education</a
+            >
+          </div>
+        </nav>
+      </div>
     </header>
 
     <!-- Main Content -->
     <main class="container mx-auto max-w-6xl p-4 md:p-8 space-y-12">
+      <!-- Section 1: Profile -->
+      <section id="profile" class="pt-16 -mt-16">
+        <div class="section-card p-6 md:p-8">
+          <div
+            class="flex flex-col md:flex-row md:items-center justify-between"
+          >
+            <div>
+              <h1 class="text-3xl md:text-4xl font-bold text-blue-600">
+                GURURAJ CHOUGULE
+              </h1>
+              <p class="text-xl md:text-2xl font-medium text-gray-700 mt-1">
+                AI-native Product Leader (CSPO)
+              </p>
+              <div class="flex flex-wrap gap-x-6 gap-y-2 text-gray-600 mt-4">
+                <span class="flex items-center">&#9742; +91 9619363677</span>
+                <span class="flex items-center"
+                  >&#9993; g.c.chougule@gmail.com</span
+                >
+                <span class="flex items-center"
+                  >&#127760; Navi Mumbai, India</span
+                >
+                <a
+                  href="https://linkedin.com/in/gururaj-chougule/"
+                  target="_blank"
+                  class="flex items-center text-blue-500 hover:underline"
+                >
+                  &#128279; LinkedIn Profile
+                </a>
+              </div>
+            </div>
+            <div class="flex-shrink-0 mt-4 md:mt-0">
+              <span
+                class="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-4 py-2 rounded-full"
+                >Open to Opportunities</span
+              >
+            </div>
+          </div>
 
-        <!-- Section 1: Profile -->
-        <section id="profile" class="pt-16 -mt-16">
-            <div class="section-card p-6 md:p-8">
-                <div class="flex flex-col md:flex-row md:items-center justify-between">
-                    <div>
-                        <h1 class="text-3xl md:text-4xl font-bold text-blue-600">GURURAJ CHOUGULE</h1>
-                        <p class="text-xl md:text-2xl font-medium text-gray-700 mt-1">AI-native Product Leader (CSPO)</p>
-                        <div class="flex flex-wrap gap-x-6 gap-y-2 text-gray-600 mt-4">
-                            <span class="flex items-center">&#9742; +91 9619363677</span>
-                            <span class="flex items-center">&#9993; g.c.chougule@gmail.com</span>
-                            <span class="flex items-center">&#127760; Navi Mumbai, India</span>
-                            <a href="https://linkedin.com/in/gururaj-chougule/" target="_blank" class="flex items-center text-blue-500 hover:underline">
-                                &#128279; LinkedIn Profile
-                            </a>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0 mt-4 md:mt-0">
-                        <span class="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-4 py-2 rounded-full">Open to Opportunities</span>
-                    </div>
+          <hr class="my-6" />
+
+          <p class="text-base text-gray-700 leading-relaxed">
+            I'm a product leader passionate about building intelligent
+            platforms. I've found that data tells a clearer story than I can, so
+            I've organized my key projects and metrics into this interactive
+            dashboard. Please have a look around.
+          </p>
+
+          <h3 class="text-xl font-semibold text-gray-800 mt-8 mb-4">
+            Key Career Metrics
+          </h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="stat-card text-center">
+              <p class="text-3xl font-bold text-blue-600">30%+</p>
+              <p class="text-sm font-medium text-gray-600 mt-1">
+                Forecasting Accuracy
+              </p>
+            </div>
+            <div class="stat-card text-center">
+              <p class="text-3xl font-bold text-blue-600">1M+</p>
+              <p class="text-sm font-medium text-gray-600 mt-1">
+                Orders Processed
+              </p>
+            </div>
+            <div class="stat-card text-center">
+              <p class="text-3xl font-bold text-blue-600">37%</p>
+              <p class="text-sm font-medium text-gray-600 mt-1">
+                User Engagement Lift
+              </p>
+            </div>
+            <div class="stat-card text-center">
+              <p class="text-3xl font-bold text-blue-600">39%</p>
+              <p class="text-sm font-medium text-gray-600 mt-1">
+                Ticket Reduction
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Professional Experience -->
+      <section id="experience" class="pt-16 -mt-16">
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">
+          Professional Experience
+        </h2>
+        <p class="text-base text-gray-600 mb-6">
+          This is the 'what I've actually been doing' part. I'm proud of the
+          work my teams and I have shipped. Toggle between roles to see the
+          stories, quantified by the results we achieved.
+        </p>
+        <div class="section-card">
+          <!-- Tabs -->
+          <div class="flex border-b border-gray-200">
+            <button data-tab-target="#kiko" class="tab-button active">
+              Kiko Live – ONDC
+            </button>
+            <button data-tab-target="#techalpha" class="tab-button">
+              TechAlpha Group
+            </button>
+          </div>
+
+          <!-- Tab Content -->
+          <div class="p-6 md:p-8">
+            <!-- Kiko Live Content -->
+            <div id="kiko" data-tab-content class="active space-y-8">
+              <div>
+                <div
+                  class="flex flex-col sm:flex-row justify-between sm:items-center"
+                >
+                  <h3 class="text-2xl font-semibold text-gray-800">
+                    Product Head
+                  </h3>
+                  <span class="text-gray-600 font-medium mt-1 sm:mt-0"
+                    >May 2023 – Present</span
+                  >
                 </div>
+                <div class="flex flex-wrap gap-4 mt-4">
+                  <span
+                    class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full"
+                    >&#127942; Strategic Excellence Award (2025)</span
+                  >
+                  <span
+                    class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full"
+                    >&#127942; Team Player Of The Year (2024)</span
+                  >
+                </div>
+              </div>
 
-                <hr class="my-6">
-                
-                <p class="text-base text-gray-700 leading-relaxed">
-                    This is my interactive profile, designed to provide a dynamic overview of my professional experience. As an AI-native product leader, I focus on building and scaling intelligent SaaS platforms. This application summarizes my key achievements, project impacts, and core competencies, allowing you to explore the data in a non-linear way.
+              <!-- Key Product Launches -->
+              <div>
+                <h4 class="text-xl font-semibold text-gray-700 mb-4">
+                  Key Product Launches
+                </h4>
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <h5 class="font-bold text-blue-600">
+                      Convlyze.com (AI Sales Intelligence)
+                    </h5>
+                    <p class="text-sm text-gray-600 mt-1">
+                      Led end-to-end lifecycle of an AI voice platform, driving
+                      a
+                      <strong>30%+ improvement in sales forecasting</strong> by
+                      converting calls into actionable intelligence.
+                    </p>
+                  </div>
+                  <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <h5 class="font-bold text-blue-600">
+                      sellers.kiko.live (ONDC SaaS)
+                    </h5>
+                    <p class="text-sm text-gray-600 mt-1">
+                      Launched a scalable ONDC SaaS platform that successfully
+                      processed over <strong>1,000,000 orders</strong>.
+                    </p>
+                  </div>
+                  <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <h5 class="font-bold text-blue-600">
+                      kikoshop.in (B2B Marketplace)
+                    </h5>
+                    <p class="text-sm text-gray-600 mt-1">
+                      Acquired <strong>5,000+ sellers</strong> and processed
+                      <strong>10,000+ orders</strong> within the first 3 months
+                      of launch.
+                    </p>
+                  </div>
+                  <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <h5 class="font-bold text-blue-600">
+                      Tabe (Food Ordering App)
+                    </h5>
+                    <p class="text-sm text-gray-600 mt-1">
+                      Achieved <strong>1,000+ installs</strong> in the
+                      application's inaugural week.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Core Responsibilities & Impact -->
+              <div>
+                <h4 class="text-xl font-semibold text-gray-700 mb-4">
+                  Core Responsibilities & Impact
+                </h4>
+                <p class="text-sm text-gray-600 mb-4">
+                  Beyond specific launches, my core responsibilities involve
+                  cross-functional leadership and data-driven optimization. This
+                  chart visualizes the key performance indicators I've directly
+                  impacted in my role.
                 </p>
-
-                <h3 class="text-xl font-semibold text-gray-800 mt-8 mb-4">Key Career Metrics</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="stat-card text-center">
-                        <p class="text-3xl font-bold text-blue-600">30%+</p>
-                        <p class="text-sm font-medium text-gray-600 mt-1">Forecasting Accuracy</p>
-                    </div>
-                    <div class="stat-card text-center">
-                        <p class="text-3xl font-bold text-blue-600">1M+</p>
-                        <p class="text-sm font-medium text-gray-600 mt-1">Orders Processed</p>
-                    </div>
-                    <div class="stat-card text-center">
-                        <p class="text-3xl font-bold text-blue-600">37%</p>
-                        <p class="text-sm font-medium text-gray-600 mt-1">User Engagement Lift</p>
-                    </div>
-                    <div class="stat-card text-center">
-                        <p class="text-3xl font-bold text-blue-600">39%</p>
-                        <p class="text-sm font-medium text-gray-600 mt-1">Ticket Reduction</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 2: Professional Experience -->
-        <section id="experience" class="pt-16 -mt-16">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Professional Experience</h2>
-            <p class="text-base text-gray-600 mb-6">
-                This section interactively details my professional roles. You can toggle between my current and previous positions to see a focused breakdown of responsibilities, key projects, and quantifiable achievements for each.
-            </p>
-            <div class="section-card">
-                <!-- Tabs -->
-                <div class="flex border-b border-gray-200">
-                    <button data-tab-target="#kiko" class="tab-button active">
-                        Kiko Live – ONDC
-                    </button>
-                    <button data-tab-target="#techalpha" class="tab-button">
-                        TechAlpha Group
-                    </button>
-                </div>
-
-                <!-- Tab Content -->
-                <div class="p-6 md:p-8">
-                    <!-- Kiko Live Content -->
-                    <div id="kiko" data-tab-content class="active space-y-8">
-                        <div>
-                            <div class="flex flex-col sm:flex-row justify-between sm:items-center">
-                                <h3 class="text-2xl font-semibold text-gray-800">Product Head</h3>
-                                <span class="text-gray-600 font-medium mt-1 sm:mt-0">May 2023 – Present</span>
-                            </div>
-                            <div class="flex flex-wrap gap-4 mt-4">
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">&#127942; Strategic Excellence Award (2025)</span>
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">&#127942; Team Player Of The Year (2024)</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Key Product Launches -->
-                        <div>
-                            <h4 class="text-xl font-semibold text-gray-700 mb-4">Key Product Launches</h4>
-                            <div class="grid md:grid-cols-2 gap-4">
-                                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <h5 class="font-bold text-blue-600">Convlyze.com (AI Sales Intelligence)</h5>
-                                    <p class="text-sm text-gray-600 mt-1">Led end-to-end lifecycle of an AI voice platform, driving a <strong>30%+ improvement in sales forecasting</strong> by converting calls into actionable intelligence.</p>
-                                </div>
-                                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <h5 class="font-bold text-blue-600">sellers.kiko.live (ONDC SaaS)</h5>
-                                    <p class="text-sm text-gray-600 mt-1">Launched a scalable ONDC SaaS platform that successfully processed over <strong>1,000,000 orders</strong>.</p>
-                                </div>
-                                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <h5 class="font-bold text-blue-600">kikoshop.in (B2B Marketplace)</h5>
-                                    <p class="text-sm text-gray-600 mt-1">Acquired <strong>5,000+ sellers</strong> and processed <strong>10,000+ orders</strong> within the first 3 months of launch.</p>
-                                </div>
-                                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <h5 class="font-bold text-blue-600">Tabe (Food Ordering App)</h5>
-                                    <p class="text-sm text-gray-600 mt-1">Achieved <strong>1,000+ installs</strong> in the application's inaugural week.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Core Responsibilities & Impact -->
-                        <div>
-                            <h4 class="text-xl font-semibold text-gray-700 mb-4">Core Responsibilities & Impact</h4>
-                            <p class="text-sm text-gray-600 mb-4">
-                                Beyond specific launches, my core responsibilities involve cross-functional leadership and data-driven optimization. This chart visualizes the key performance indicators I've directly impacted in my role.
-                            </p>
-                            <div class="chart-container">
-                                <canvas id="kikoImpactChart"></canvas>
-                            </div>
-                            <ul class="text-sm text-gray-600 mt-6 space-y-2 list-disc list-inside">
-                                <li>Directed a 12-member team of APMs, designers, and tech leads.</li>
-                                <li>Built and delivered integrated SaaS solutions (admin, seller, order mgmt) in 6 months.</li>
-                                <li>Partnered with Sales, Ops, and Tech to drive alignment and accelerate product timelines.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- TechAlpha Content -->
-                    <div id="techalpha" data-tab-content class="space-y-6">
-                        <div>
-                            <div class="flex flex-col sm:flex-row justify-between sm:items-center">
-                                <h3 class="text-2xl font-semibold text-gray-800">Senior Product and NOC Engineer</h3>
-                                <span class="text-gray-600 font-medium mt-1 sm:mt-0">May 2021 – May 2023</span>
-                            </div>
-                            <div class="flex flex-wrap gap-4 mt-4">
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">&#127942; The Silent Soldier (2022)</span>
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">&#127942; Employee Of The Month (Aug-2021)</span>
-                            </div>
-                        </div>
-                        
-                        <p class="text-gray-700">
-                            In this role, I bridged product management with technical operations, leading a support team and managing product launches. My primary focus was on optimizing customer-facing products through data analysis and user feedback.
-                        </p>
-
-                        <div class="stat-card text-center max-w-sm mx-auto">
-                            <p class="text-3xl font-bold text-blue-600">39% Reduction</p>
-                            <p class="text-sm font-medium text-gray-600 mt-1">in Support Tickets/Escalations</p>
-                        </div>
-                        
-                        <ul class="text-base text-gray-600 mt-6 space-y-2 list-disc list-inside">
-                            <li>Achieved the 39% ticket reduction by defining customer needs (via user interviews and data analysis) and optimizing features across Omnichannel, Business WhatsApp, and IVR products.</li>
-                            <li>Managed the end-to-end launch of new A2P SMS products.</li>
-                            <li>Led a support and operations team of 9 members.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 3: Skills & Expertise -->
-        <section id="skills" class="pt-16 -mt-16">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Skills & Expertise</h2>
-            <p class="text-base text-gray-600 mb-6">
-                My skills are balanced across three core pillars: Product Management, AI & Data, and Design & Leadership. This visualization demonstrates my expertise across these key domains, which I leverage to build holistic and effective products.
-            </p>
-            <div class="section-card p-6 md:p-8">
                 <div class="chart-container">
-                    <canvas id="skillsRadarChart"></canvas>
+                  <canvas id="kikoImpactChart"></canvas>
                 </div>
-                <div class="grid md:grid-cols-3 gap-6 mt-8">
-                    <div>
-                        <h4 class="font-semibold text-lg text-blue-600">Product Management</h4>
-                        <ul class="text-sm text-gray-600 mt-2 space-y-1 list-disc list-inside">
-                            <li>Product Strategy</li>
-                            <li>Go-to-Market (GTM) Strategy</li>
-                            <li>Product Lifecycle Management</li>
-                            <li>Agile (CSPO) & Roadmapping</li>
-                            <li>Jira, Asana, Miro</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-lg text-blue-600">AI & Data Analytics</h4>
-                        <ul class="text-sm text-gray-600 mt-2 space-y-1 list-disc list-inside">
-                            <li>Generative AI & Agentic AI</li>
-                            <li>CrewAI, LangGraph, AutoGen</li>
-                            <li>Google Analytics, A/B Testing</li>
-                            <li>KPI Tracking & Competitive Analysis</li>
-                            <li>Lean Six Sigma (Yellow Belt)</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-lg text-blue-600">Design & Leadership</h4>
-                        <ul class="text-sm text-gray-600 mt-2 space-y-1 list-disc list-inside">
-                            <li>UI/UX Design (Figma, Draw.io)</li>
-                            <li>Design Thinking & Rapid Prototyping</li>
-                            <li>Team Leadership (12 members)</li>
-                            <li>Cross-Functional Collaboration</li>
-                            <li>Stakeholder Management</li>
-                        </ul>
-                    </div>
-                </div>
+                <ul
+                  class="text-sm text-gray-600 mt-6 space-y-2 list-disc list-inside"
+                >
+                  <li>
+                    Directed a 12-member team of APMs, designers, and tech
+                    leads.
+                  </li>
+                  <li>
+                    Built and delivered integrated SaaS solutions (admin,
+                    seller, order mgmt) in 6 months.
+                  </li>
+                  <li>
+                    Partnered with Sales, Ops, and Tech to drive alignment and
+                    accelerate product timelines.
+                  </li>
+                </ul>
+              </div>
             </div>
-        </section>
 
-        <!-- Section 4: Education & Certifications -->
-        <section id="education" class="pt-16 -mt-16">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Education & Certifications</h2>
-            <p class="text-base text-gray-600 mb-6">
-                My formal education provided a strong foundation in management and engineering, while my recent certifications demonstrate a commitment to continuous learning in the fast-evolving fields of AI and product management.
-            </p>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="section-card p-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Education</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <p class="font-semibold text-gray-700">Welingkar’s Institute of Management, Mumbai</p>
-                            <p class="text-sm text-gray-600">PGDM-SCM/OPS (85%) | Jan 2020 - Jan 2022</p>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-700">Mumbai University, ViMEET</p>
-                            <p class="text-sm text-gray-600">Bachelor of Engineering, EXTC (7.00 CGPA) | June 2015 - June 2019</p>
-                        </div>
-                    </div>
+            <!-- TechAlpha Content -->
+            <div id="techalpha" data-tab-content class="space-y-6">
+              <div>
+                <div
+                  class="flex flex-col sm:flex-row justify-between sm:items-center"
+                >
+                  <h3 class="text-2xl font-semibold text-gray-800">
+                    Senior Product and NOC Engineer
+                  </h3>
+                  <span class="text-gray-600 font-medium mt-1 sm:mt-0"
+                    >May 2021 – May 2023</span
+                  >
                 </div>
-                <div class="section-card p-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Certifications & Publications</h3>
-                    <ul class="space-y-2 text-sm text-gray-700">
-                        <li>&#127891; The Complete Agentic AI Engineering Course (Oct 2025)</li>
-                        <li>&#127891; Google Cloud Generative AI Leader Certification (Sept 2025)</li>
-                        <li>&#127891; Certified Scrum Product Owner (CSPO), Scrum Alliance (Jun 2025)</li>
-                        <li>&#127891; Product Management Course (Apr 2023)</li>
-                        <li>&#127891; Advance Lean Six Sigma Yellow Belt (CSSC) (Jan 2023)</li>
-                        <li>&#127891; Fellowship on Business Modelling, Aarhus University (June 2019)</li>
-                        <li>&#127891; Solving Problem with critical and creative thinking, IBM (May 2020)</li>
-                        <li>&#128211; Published IEEE paper on applying business modeling tools</li>
-                    </ul>
+                <div class="flex flex-wrap gap-4 mt-4">
+                  <span
+                    class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full"
+                    >&#127942; The Silent Soldier (2022)</span
+                  >
+                  <span
+                    class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full"
+                    >&#127942; Employee Of The Month (Aug-2021)</span
+                  >
                 </div>
+              </div>
+
+              <p class="text-gray-700">
+                In this role, I bridged product management with technical
+                operations, leading a support team and managing product
+                launches. My primary focus was on optimizing customer-facing
+                products through data analysis and user feedback.
+              </p>
+
+              <div class="stat-card text-center max-w-sm mx-auto">
+                <p class="text-3xl font-bold text-blue-600">39% Reduction</p>
+                <p class="text-sm font-medium text-gray-600 mt-1">
+                  in Support Tickets/Escalations
+                </p>
+              </div>
+
+              <ul
+                class="text-base text-gray-600 mt-6 space-y-2 list-disc list-inside"
+              >
+                <li>
+                  Achieved the 39% ticket reduction by defining customer needs
+                  (via user interviews and data analysis) and optimizing
+                  features across Omnichannel, Business WhatsApp, and IVR
+                  products.
+                </li>
+                <li>Managed the end-to-end launch of new A2P SMS products.</li>
+                <li>Led a support and operations team of 9 members.</li>
+              </ul>
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Skills & Expertise -->
+      <section id="skills" class="pt-16 -mt-16">
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">
+          Skills & Expertise
+        </h2>
+        <p class="text-base text-gray-600 mb-6">
+          Building products takes a mix of skills. Here's my 'character sheet'—a
+          snapshot of my core abilities in Product, AI, and Leadership. I'm
+          always working on 'leveling up' across all three.
+        </p>
+        <div class="section-card p-6 md:p-8">
+          <div class="chart-container">
+            <canvas id="skillsRadarChart"></canvas>
+          </div>
+          <div class="grid md:grid-cols-3 gap-6 mt-8">
+            <div>
+              <h4 class="font-semibold text-lg text-blue-600">
+                Product Management
+              </h4>
+              <ul
+                class="text-sm text-gray-600 mt-2 space-y-1 list-disc list-inside"
+              >
+                <li>Product Strategy</li>
+                <li>Go-to-Market (GTM) Strategy</li>
+                <li>Product Lifecycle Management</li>
+                <li>Agile (CSPO) & Roadmapping</li>
+                <li>Jira, Asana, Miro</li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="font-semibold text-lg text-blue-600">
+                AI & Data Analytics
+              </h4>
+              <ul
+                class="text-sm text-gray-600 mt-2 space-y-1 list-disc list-inside"
+              >
+                <li>Generative AI & Agentic AI</li>
+                <li>CrewAI, LangGraph, AutoGen</li>
+                <li>Google Analytics, A/B Testing</li>
+                <li>KPI Tracking & Competitive Analysis</li>
+                <li>Lean Six Sigma (Yellow Belt)</li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="font-semibold text-lg text-blue-600">
+                Design & Leadership
+              </h4>
+              <ul
+                class="text-sm text-gray-600 mt-2 space-y-1 list-disc list-inside"
+              >
+                <li>UI/UX Design (Figma, Draw.io)</li>
+                <li>Design Thinking & Rapid Prototyping</li>
+                <li>Team Leadership (12 members)</li>
+                <li>Cross-Functional Collaboration</li>
+                <li>Stakeholder Management</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Education & Certifications -->
+      <section id="education" class="pt-16 -mt-16">
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">
+          Education & Certifications
+        </h2>
+        <p class="text-base text-gray-600 mb-6">
+          A good foundation in engineering and management is just the start. The
+          real fun is in the continuous learning. Here's my collection of
+          certifications from my quest to stay curious, especially in AI.
+        </p>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="section-card p-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Education</h3>
+            <div class="space-y-4">
+              <div>
+                <p class="font-semibold text-gray-700">
+                  Welingkar’s Institute of Management, Mumbai
+                </p>
+                <p class="text-sm text-gray-600">
+                  PGDM-SCM/OPS (85%) | Jan 2020 - Jan 2022
+                </p>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-700">
+                  Mumbai University, ViMEET
+                </p>
+                <p class="text-sm text-gray-600">
+                  Bachelor of Engineering, EXTC (7.00 CGPA) | June 2015 - June
+                  2019
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="section-card p-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">
+              Certifications & Publications
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-700">
+              <li>
+                &#127891; The Complete Agentic AI Engineering Course (Oct 2025)
+              </li>
+              <li>
+                &#127891; Google Cloud Generative AI Leader Certification (Sept
+                2025)
+              </li>
+              <li>
+                &#127891; Certified Scrum Product Owner (CSPO), Scrum Alliance
+                (Jun 2025)
+              </li>
+              <li>&#127891; Product Management Course (Apr 2023)</li>
+              <li>
+                &#127891; Advance Lean Six Sigma Yellow Belt (CSSC) (Jan 2023)
+              </li>
+              <li>
+                &#127891; Fellowship on Business Modelling, Aarhus University
+                (June 2019)
+              </li>
+              <li>
+                &#127891; Solving Problem with critical and creative thinking,
+                IBM (May 2020)
+              </li>
+              <li>
+                &#128211; Published IEEE paper on applying business modeling
+                tools
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="text-center py-8 mt-12 border-t border-gray-200">
-        <p class="text-sm text-gray-500">Agent Status: IDLE. Awaiting new mission... (Want to assign one?)</p>
+      <p
+        class="text-sm text-gray-300 hover:text-gray-600 transition-colors duration-300 cursor-default"
+        title="A nod to the Agentic AI skills on this resume!"
+      >
+        Agent Status: IDLE. Awaiting new mission... (Want to assign one?)
+      </p>
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // Tab Switching Logic
-            const tabs = document.querySelectorAll('[data-tab-target]');
-            const tabContents = document.querySelectorAll('[data-tab-content]');
+      document.addEventListener("DOMContentLoaded", () => {
+        // Tab Switching Logic
+        const tabs = document.querySelectorAll("[data-tab-target]");
+        const tabContents = document.querySelectorAll("[data-tab-content]");
 
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const target = document.querySelector(tab.dataset.tabTarget);
-                    
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    tabs.forEach(t => {
-                        t.classList.remove('active');
-                    });
-                    
-                    tab.classList.add('active');
-                    target.classList.add('active');
-                });
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            const target = document.querySelector(tab.dataset.tabTarget);
+
+            tabContents.forEach((content) => {
+              content.classList.remove("active");
             });
 
-            // Navigation Scroll-Spy Logic
-            const sections = document.querySelectorAll('section');
-            const navLinks = document.querySelectorAll('nav a');
-
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.4 
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href') === `#${entry.target.id}`) {
-                                link.classList.add('active');
-                            }
-                        });
-                    }
-                });
-            }, observerOptions);
-
-            sections.forEach(section => {
-                observer.observe(section);
+            tabs.forEach((t) => {
+              t.classList.remove("active");
             });
 
-            // Chart.js: Kiko Impact Bar Chart
-            const ctxImpact = document.getElementById('kikoImpactChart');
-            if (ctxImpact) {
-                new Chart(ctxImpact, {
-                    type: 'bar',
-                    data: {
-                        labels: ['User Engagement Lift', 'Retention Boost', 'Operational Efficiency', 'On-Time Launch Ratio', 'User Growth'],
-                        datasets: [{
-                            label: '% Impact',
-                            data: [37, 15, 21, 95, 30],
-                            backgroundColor: [
-                                'rgba(59, 130, 246, 0.6)',
-                                'rgba(16, 185, 129, 0.6)',
-                                'rgba(239, 68, 68, 0.6)',
-                                'rgba(139, 92, 246, 0.6)',
-                                'rgba(245, 158, 11, 0.6)'
-                            ],
-                            borderColor: [
-                                'rgba(59, 130, 246, 1)',
-                                'rgba(16, 185, 129, 1)',
-                                'rgba(239, 68, 68, 1)',
-                                'rgba(139, 92, 246, 1)',
-                                'rgba(245, 158, 11, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        indexAxis: 'y',
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                max: 100,
-                                ticks: {
-                                    callback: function(value) {
-                                        return value + '%'
-                                    }
-                                }
-                            },
-                            y: {
-                                ticks: {
-                                    autoSkip: false,
-                                    callback: function(value, index, values) {
-                                        const label = this.getLabelForValue(value);
-                                        return label.length > 20 ? label.substring(0, 20) + '...' : label;
-                                    }
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return `${context.label}: ${context.raw}%`;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Chart.js: Skills Radar Chart
-            const ctxRadar = document.getElementById('skillsRadarChart');
-            if (ctxRadar) {
-                new Chart(ctxRadar, {
-                    type: 'radar',
-                    data: {
-                        labels: [
-                            'Product Strategy', 
-                            'Generative AI', 
-                            'Team Leadership', 
-                            'GTM Strategy', 
-                            'Data Analytics', 
-                            'Design Thinking'
-                        ],
-                        datasets: [{
-                            label: 'Expertise Level',
-                            data: [5, 5, 5, 4, 4, 4], 
-                            backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                            borderColor: 'rgba(59, 130, 246, 1)',
-                            pointBackgroundColor: 'rgba(59, 130, 246, 1)',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgba(59, 130, 246, 1)',
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            r: {
-                                beginAtZero: true,
-                                max: 5,
-                                stepSize: 1,
-                                pointLabels: {
-                                    font: {
-                                        size: 13
-                                    }
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        }
-                    }
-                });
-            }
+            tab.classList.add("active");
+            target.classList.add("active");
+          });
         });
+
+        // Navigation Scroll-Spy Logic
+        const sections = document.querySelectorAll("section");
+        const navLinks = document.querySelectorAll("nav a");
+
+        const observerOptions = {
+          root: null,
+          rootMargin: "0px",
+          threshold: 0.4,
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              navLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === `#${entry.target.id}`) {
+                  link.classList.add("active");
+                }
+              });
+            }
+          });
+        }, observerOptions);
+
+        sections.forEach((section) => {
+          observer.observe(section);
+        });
+
+        // Chart.js: Kiko Impact Bar Chart
+        const ctxImpact = document.getElementById("kikoImpactChart");
+        if (ctxImpact) {
+          new Chart(ctxImpact, {
+            type: "bar",
+            data: {
+              labels: [
+                "User Engagement Lift",
+                "Retention Boost",
+                "Operational Efficiency",
+                "On-Time Launch Ratio",
+                "User Growth",
+              ],
+              datasets: [
+                {
+                  label: "% Impact",
+                  data: [37, 15, 21, 95, 30],
+                  backgroundColor: [
+                    "rgba(59, 130, 246, 0.6)",
+                    "rgba(16, 185, 129, 0.6)",
+                    "rgba(239, 68, 68, 0.6)",
+                    "rgba(139, 92, 246, 0.6)",
+                    "rgba(245, 158, 11, 0.6)",
+                  ],
+                  borderColor: [
+                    "rgba(59, 130, 246, 1)",
+                    "rgba(16, 185, 129, 1)",
+                    "rgba(239, 68, 68, 1)",
+                    "rgba(139, 92, 246, 1)",
+                    "rgba(245, 158, 11, 1)",
+                  ],
+                  borderWidth: 1,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              indexAxis: "y",
+              scales: {
+                x: {
+                  beginAtZero: true,
+                  max: 100,
+                  ticks: {
+                    callback: function (value) {
+                      return value + "%";
+                    },
+                  },
+                },
+                y: {
+                  ticks: {
+                    autoSkip: false,
+                    callback: function (value, index, values) {
+                      const label = this.getLabelForValue(value);
+                      return label.length > 20
+                        ? label.substring(0, 20) + "..."
+                        : label;
+                    },
+                  },
+                },
+              },
+              plugins: {
+                legend: {
+                  display: false,
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      return `${context.label}: ${context.raw}%`;
+                    },
+                  },
+                },
+              },
+            },
+          });
+        }
+
+        // Chart.js: Skills Radar Chart
+        const ctxRadar = document.getElementById("skillsRadarChart");
+        if (ctxRadar) {
+          new Chart(ctxRadar, {
+            type: "radar",
+            data: {
+              labels: [
+                "Product Strategy",
+                "Generative AI",
+                "Team Leadership",
+                "GTM Strategy",
+                "Data Analytics",
+                "Design Thinking",
+              ],
+              datasets: [
+                {
+                  label: "Expertise Level",
+                  data: [5, 5, 5, 4, 4, 4],
+                  backgroundColor: "rgba(59, 130, 246, 0.2)",
+                  borderColor: "rgba(59, 130, 246, 1)",
+                  pointBackgroundColor: "rgba(59, 130, 246, 1)",
+                  pointBorderColor: "#fff",
+                  pointHoverBackgroundColor: "#fff",
+                  pointHoverBorderColor: "rgba(59, 130, 246, 1)",
+                  borderWidth: 2,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                r: {
+                  beginAtZero: true,
+                  max: 5,
+                  stepSize: 1,
+                  pointLabels: {
+                    font: {
+                      size: 13,
+                    },
+                  },
+                },
+              },
+              plugins: {
+                legend: {
+                  display: false,
+                },
+              },
+            },
+          });
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
